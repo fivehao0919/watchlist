@@ -10,6 +10,7 @@ flask = "==1.0.1"
 python-dotenv = "*"
 flask-sqlalchemy = "*"
 pylint-flask = "*"
+flask-login = "*"
 
 [requires]
 python_version = "3.6"
