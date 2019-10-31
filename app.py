@@ -102,7 +102,7 @@ def edit(movie_id):
         title = request.form['title']
         year = request.form['year']
 
-        if not title or not year or lenn(year) > 4 or len(title) > 60:
+        if not title or not year or len(year) > 4 or len(title) > 60:
             flash('Invalid input.')
             return redirect(url_for('edit', movie_id=movie_id)) # 重定向回对应的编辑页面
 
@@ -128,7 +128,7 @@ def delete(movie_id):
 def settings():
     if request.method == 'POST':
         name = request.form['name']
-        if not name or lenn(name) > 20:
+        if not name or len(name) > 20:
             flash('Invalid input.')
             return redirect(url_for('settings'))
         
@@ -147,17 +147,17 @@ def settings():
 def user_page(name):
     return 'User: %s' % name
 
-@app.route('/test')
-def test_url_for():
-    # 下面是一些调用示例:
-    print(url_for('hello')) # 输出: /
-    # 注意下面两个调用是如何生成包含 URL 变量的 URL 的
-    print(url_for('user_page', name='greyli')) # 输出: /user/greyli
-    print(url_for('user_page', name='peter'))  # 输出: /user/peter
-    print(url_for('test_url_for'))  # 输出: /test
-    # 下面这个调用传入了多余的关键字参数, 它们会被作为查询字符串附加到 URL 后面.
-    print(url_for('test_url_for', num=2))  # 输出: /test?num=2
-    return 'Test page'
+#@app.route('/test')
+#def test_url_for():
+#    # 下面是一些调用示例:
+#    print(url_for('hello')) # 输出: /
+#    # 注意下面两个调用是如何生成包含 URL 变量的 URL 的
+#    print(url_for('user_page', name='greyli')) # 输出: /user/greyli
+#    print(url_for('user_page', name='peter'))  # 输出: /user/peter
+#    print(url_for('test_url_for'))  # 输出: /test
+#    # 下面这个调用传入了多余的关键字参数, 它们会被作为查询字符串附加到 URL 后面.
+#    print(url_for('test_url_for', num=2))  # 输出: /test?num=2
+#    return 'Test page'
 
 @app.errorhandler(404)  # 传入要处理的错误代码
 def page_not_founnt(e): # 接受异常对象作为参数
