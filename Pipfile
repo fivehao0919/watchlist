@@ -12,6 +12,7 @@ python-dotenv = "*"
 flask-sqlalchemy = "*"
 pylint-flask = "*"
 flask-login = "*"
+dotenv = "*"
 
 [requires]
 python_version = "3.6"
