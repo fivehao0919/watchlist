@@ -226,11 +226,11 @@ class WatchlistTestCase(unittest.TestCase):
 
         # 测试更新设置
         response = self.client.post('/settings', data=dict(
-            name='Grey Li',
+            name='Five Hao',
         ), follow_redirects=True)
         data = response.get_data(as_text=True)
         self.assertIn('Settings updated.', data)
-        self.assertIn('Grey Li', data)
+        self.assertIn('Five Hao', data)
         
         # 测试更新设置, 名称为空
         response = self.client.post('/settings', data=dict(
