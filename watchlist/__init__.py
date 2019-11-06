@@ -4,6 +4,8 @@ import sys
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_bootstrap import Bootstrap
+from flask_moment import Moment
 
 # SQLite URI compatible
 WIN = sys.platform.startswith('win')
@@ -17,9 +19,12 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev')    # 等同于 app.secret_key = 'dev'
 app.config['SQLALCHEMY_DATABASE_URI'] = prefix + os.path.join(os.path.dirname(app.root_path), os.getenv('DATABASE_FILE', 'data.db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['WTF_CSRF_ENABLED'] = False
 
 db = SQLAlchemy(app)
+bootstrap = Bootstrap(app)
 login_manager = LoginManager(app)
+moment = Moment(app)
 
 @login_manager.user_loader
 def load_user(user_id): # 创建用户加载回调函数, 接受用户 ID 作为参数

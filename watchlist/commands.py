@@ -1,7 +1,7 @@
 import click
 
 from watchlist import app, db
-from watchlist.models import User, Movie
+from watchlist.models import User, Movie, Message
 
 @app.cli.command()  # 注册为命令
 @click.option('--drop', is_flag=True, help='Create after drop.')    # 设置选项
@@ -9,12 +9,17 @@ def initdb(drop):
     """Initialize the datebase."""
     if drop:    # 判断是否输入了选项
         db.drop_all()
+        click.echo('Dropped database.') # 输出提示信息
     db.create_all()
     click.echo('Initialized database.') # 输出提示信息
 
 @app.cli.command()
-def forge():
+@click.option('--count', default=20, help='Quantity of messages, default is 20.')
+def forge(count):
     """Generate fake data."""
+    from faker import Faker
+
+    db.drop_all()
     db.create_all()
 
     # 全局的两个变量移动到这个函数内
@@ -37,6 +42,16 @@ def forge():
     for m in movies:
         movie = Movie(title=m['title'], year=m['year'])
         db.session.add(movie)
+
+    fake = Faker()
+
+    for i in range(count):
+        message = Message(
+            name=fake.name(),
+            body=fake.sentence(),
+            timestamp=fake.date_time_this_year()
+        )
+        db.session.add(message)
 
     db.session.commit()
     click.echo('Done.')

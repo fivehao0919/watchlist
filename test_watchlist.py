@@ -2,7 +2,7 @@ import unittest
 
 #from app import app, db, Movie, User, forge, initdb
 from watchlist import app, db
-from watchlist.models import User, Movie
+from watchlist.models import User, Movie, Message
 from watchlist.commands import forge, initdb
 
 class WatchlistTestCase(unittest.TestCase):
@@ -19,8 +19,9 @@ class WatchlistTestCase(unittest.TestCase):
         user = User(name='Test', username='test')
         user.set_password('123')
         movie = Movie(title='Test Movie Title', year='2019')
+        message = Message(name='init_user', body='init_body')
         # 使用 add_all() 方法一次添加多个模型类实例, 传入列表
-        db.session.add_all([user, movie])
+        db.session.add_all([user, movie, message])
         db.session.commit()
 
         self.client = app.test_client() # 创建测试客户端
@@ -271,6 +272,46 @@ class WatchlistTestCase(unittest.TestCase):
         self.assertEqual(User.query.count(), 1)
         self.assertEqual(User.query.first().username, 'peter')
         self.assertTrue(User.query.first().validate_password('456'))
+
+    # 测试设置
+    def test_message(self):
+
+        # 测试留言板页面
+        response = self.client.get('/message')
+        data = response.get_data(as_text=True)
+        self.assertIn('Name', data)
+        self.assertIn('Message', data)
+        self.assertIn('messages', data)
+        self.assertIn('init_user', data)
+        self.assertIn('init_body', data)
+
+        # 测试更新设置
+        response = self.client.post('/message', data=dict(
+            name='Five Hao',
+            body='TEST'
+        ), follow_redirects=True)
+        data = response.get_data(as_text=True)
+        self.assertIn('Your message have been sent to the world!', data)
+        self.assertIn('Five Hao', data)
+        
+        # 测试更新设置, 名称为空
+        response = self.client.post('/message', data=dict(
+            name='',
+            body='TEST'
+        ), follow_redirects=True)
+        data = response.get_data(as_text=True)
+        self.assertNotIn('Your message have been sent to the world!', data)
+        self.assertIn('This field is required.', data)
+
+        # 测试更新设置, 信息为空
+        response = self.client.post('/message', data=dict(
+            name='Five Hao',
+            body=''
+        ), follow_redirects=True)
+        data = response.get_data(as_text=True)
+        self.assertNotIn('Your message have been sent to the world!', data)
+        self.assertIn('This field is required.', data)
+
 
 if __name__ == '__main__':
     unittest.main()

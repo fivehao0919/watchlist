@@ -12,7 +12,11 @@ python-dotenv = "*"
 flask-sqlalchemy = "*"
 pylint-flask = "*"
 flask-login = "*"
-dotenv = "*"
+bootstrap-flask = "*"
+flask-wtf = "*"
+flask-moment = "*"
+faker = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.6"

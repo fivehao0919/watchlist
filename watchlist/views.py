@@ -2,7 +2,8 @@ from flask import render_template, request, url_for, redirect, flash
 from flask_login import login_user, login_required, logout_user, current_user
 
 from watchlist import app, db
-from watchlist.models import User, Movie
+from watchlist.models import User, Movie, Message
+from watchlist.forms import HelloForm
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -30,6 +31,7 @@ def index():
     movies = Movie.query.all()  # 读取所有电影记录
     return render_template('index.html', user=user, movies=movies)
 
+
 @app.route('/movie/edit/<int:movie_id>', methods=['GET', 'POST'])
 @login_required # 登陆保护
 def edit(movie_id):
@@ -50,6 +52,23 @@ def edit(movie_id):
         return redirect(url_for('index'))   # 重定向回主页
 
     return render_template('edit.html', movie=movie)    # 传入被编辑的电影记录
+
+
+@app.route('/message', methods=['GET', 'POST'])
+def message():
+    form = HelloForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        body = form.body.data
+        message = Message(body=body, name=name)
+        db.session.add(message)
+        db.session.commit()
+        flash('Your message have been sent to the world!')
+        #return redirect(url_for('index'))
+
+    messages = Message.query.order_by(Message.timestamp.desc()).all()
+    return render_template('message.html', form=form, messages=messages)
+    #return render_template('message.html', form=form)
 
 @app.route('/movie/delete/<int:movie_id>', methods=['POST'])    # 限定只接受 POST 请求
 @login_required # 登陆保护
